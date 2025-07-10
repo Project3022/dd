@@ -277,11 +277,12 @@ document.addEventListener('DOMContentLoaded', () => {
   cargarTodosLosProductos();
 });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-  const lightbox = document.getElementById('lightbox');
-  const lightboxImg = document.querySelector('.lightbox-image');
-  const closeBtn = document.querySelector('.close-btn');
+function activarLightbox() {
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.querySelector(".lightbox-image");
+  const closeBtn = document.querySelector(".close-btn");
+  const prevBtn = document.getElementById("prev-img");
+  const nextBtn = document.getElementById("next-img");
 
   let currentImages = [];
   let currentIndex = 0;
@@ -289,46 +290,52 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.main-image').forEach(img => {
     img.addEventListener('click', () => {
       try {
-        // Intentamos parsear el data-images
-        currentImages = JSON.parse(img.dataset.images);
-        // Si no es un array válido o está vacío, fallback a imagen única
+        const imagesData = img.dataset.images;
+        currentImages = JSON.parse(imagesData);
+
         if (!Array.isArray(currentImages) || currentImages.length === 0) {
           currentImages = [img.src];
         }
+
+        currentIndex = 0;
+        lightboxImg.src = currentImages[currentIndex];
+        lightbox.style.display = "flex";
+        document.body.style.overflow = "hidden";
       } catch (e) {
-        // En caso de error, fallback a imagen única
-        currentImages = [img.src];
+        console.error("Error al abrir lightbox:", e);
       }
-      currentIndex = 0;
-      lightboxImg.src = currentImages[currentIndex];
-      lightbox.style.display = 'flex';
-      document.body.style.overflow = 'hidden'; // evitar scroll
     });
   });
 
-  // Avanzar imagen al hacer click en el lightbox (solo si hay más de una imagen)
-  lightbox.addEventListener('click', (e) => {
-    // Para que no cierre al hacer click en el botón de cerrar
-    if (e.target === closeBtn) return;
-
-    if (currentImages.length > 1) {
-      currentIndex = (currentIndex + 1) % currentImages.length;
-      lightboxImg.src = currentImages[currentIndex];
+  function mostrarImagen(index) {
+    if (currentImages.length > 0) {
+      lightboxImg.src = currentImages[index];
     }
-  });
+  }
 
-  // Cerrar lightbox con botón
-  closeBtn.addEventListener('click', (e) => {
+  nextBtn.addEventListener('click', e => {
     e.stopPropagation();
-    lightbox.style.display = 'none';
-    document.body.style.overflow = ''; // restaurar scroll
+    currentIndex = (currentIndex + 1) % currentImages.length;
+    mostrarImagen(currentIndex);
   });
 
-  // Cerrar lightbox si clickeas fuera de la imagen (en el fondo)
-  lightbox.addEventListener('click', (e) => {
+  prevBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+    mostrarImagen(currentIndex);
+  });
+
+  closeBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    lightbox.style.display = "none";
+    document.body.style.overflow = "";
+  });
+
+  // Cerrar si se hace clic fuera de la imagen
+  lightbox.addEventListener('click', e => {
     if (e.target === lightbox) {
-      lightbox.style.display = 'none';
-      document.body.style.overflow = '';
+      lightbox.style.display = "none";
+      document.body.style.overflow = "";
     }
   });
-});
+}
