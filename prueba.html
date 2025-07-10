@@ -19,6 +19,19 @@
     <input type="file" id="imagen" accept="image/*" multiple required /><br />
     <button type="submit">Subir producto</button>
   </form>
+<div id="lightbox" style="display: none;">
+  <span class="close-btn">×</span>
+  <img class="lightbox-image" src="" alt="Imagen ampliada">
+  <div class="nav-buttons">
+    <button id="prev-img">←</button>
+    <button id="next-img">→</button>
+  </div>
+</div>
+
+  <img class="main-image"
+     src="${p.imagen_url[0]}"
+     data-images='${JSON.stringify(p.imagen_url)}'
+     alt="${p.titulo}" />
 
   <script type="module">
     import { createClient } from 'https://esm.sh/@supabase/supabase-js'
