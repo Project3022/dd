@@ -101,28 +101,32 @@ body {
 /* CONTENEDOR DE PRODUCTOS */
 .container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 300px));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 300px)); /* tamaño fijo */
   gap: 10px;
   padding: 10px;
   animation: fadeIn 0.7s ease;
-  justify-content: center;
-  align-items: stretch;
+  justify-content: center; /* centra las tarjetas si hay espacio sobrante */
 }
 
-/* TARJETA DE PRODUCTO */
+
 .product-card {
-  height: 460px; /* Altura fija */
-  display: flex;
-  flex-direction: column;
-  background: var(--card-bg);
+  width: 100%;
+  max-width: none;
+  background: var(--card-bg, #ffffff);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: fadeUp 0.6s ease forwards;
   opacity: 0;
-  overflow: hidden;
+  position: relative;
+  padding: 10px;
 }
+
+
 
 .product-card:hover {
   transform: translateY(-8px);
@@ -133,30 +137,35 @@ body {
   width: 100%;
   height: 200px;
   object-fit: cover;
-  border-radius: var(--radius) var(--radius) 0 0;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
   background-color: #fff;
-  transition: transform 0.3s ease;
 }
+
 
 .product-card:hover img {
   transform: scale(1.05);
 }
 
 .product-info {
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  justify-content: space-between;
   padding: 15px 20px;
+  position: relative;
 }
 
-/* TEXTOS */
 .titulo {
-  font-size: 20px;
+  font-size: 1.1em;
   font-weight: 600;
   margin-bottom: 8px;
   color: #141313;
-  text-align: center;
+  text-align: center;  /* <-- aquí */
+  font-size: 20px;
+  text-shadow: #141313;
 }
+
 
 .precio {
   font-size: 1.25em;
@@ -170,15 +179,17 @@ body {
 .estado,
 .descripcion {
   font-size: 13px;
+  margin-top: 15px;
   color: #555;
-  line-height: 1.4;
-  margin-top: 8px;
+
+  line-height: 1.4; /* ajusta según tu diseño */
+  min-height: calc(1.4em * 3); /* espacio reservado para 3 líneas */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
+
 
 .estadoNuevo {
   color: #1b65fa;
@@ -190,21 +201,64 @@ body {
   font-weight: 600;
 }
 
+/* Descripción */
+.descripcion {
+  min-height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.descripcion.truncado {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.descripcion.expandida {
+  max-height: 100vh;
+  -webkit-line-clamp: unset;
+  box-shadow: none;
+  background: #fff;
+}
+
+.toggle-desc {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary-color);
+  cursor: pointer;
+  user-select: none;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.toggle-desc:hover {
+  color: var(--hover-color);
+}
+
 /* BOTÓN DE COMPRA */
 .buy-button {
-  margin-top: auto; /* Se pega al fondo */
-  margin-bottom: 15px;
-  width: 80%;
-  align-self: center;
-  padding: 12px 0;
-  min-width: 180px;
-  background-color: var(--primary-color);
-  color: white;
+  display: inline-block;
+  margin: 10px auto 0;
+ margin-bottom: 15px;
+  min-width: 180px;   /* ancho mínimo */
+  max-width: 100%;    /* que no se pase del contenedor */
+  text-align: center;
   font-size: 14px;
   border-radius: var(--radius);
-  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.5);
+  background-color: var(--primary-color);
+  color: white;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 2px 8px rgba(37, 211, 102, 0.5);
+    display: block;
+  width: 80%;
+  padding: 12px 0;
+  margin-top: 20px;;
+  /* resto igual */
 }
 
 .buy-button:hover {
@@ -387,6 +441,9 @@ body {
     width: 100%;
   }
 
+}
+
+@media (max-width: 600px) {
   .buy-button {
     width: 100%;
     min-width: unset;
@@ -396,6 +453,6 @@ body {
 
 @media (max-width: 480px) {
   .product-card {
-    max-width: 100%;
+    max-width: 100%; /* Más ancha en móviles */
   }
 }
